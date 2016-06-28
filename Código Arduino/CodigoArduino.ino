@@ -13,7 +13,7 @@ void re(String s){
   
   s.remove(0, 1); // Retira o primeiro elemento que é uma letra R(re) deixando apenas uma sequencia de valores numericos
   v = s.toInt();
-  velo = v *25;
+  velo = v;
   cmd = 1;
   motor1.setSpeed(velo); //Os valores para R variam entre 0 a 100, a potencia maxima do motor e 255. por isso a multiplicação por 25
   motor1.run(BACKWARD);
@@ -23,7 +23,7 @@ void re(String s){
 void acelerar(String s){ 
    s.remove(0, 1);
    v = s.toInt();
-   velo = v * 25; 
+   velo = v; 
    cmd = 2;
    motor1.setSpeed(velo); // Igual a function re();
    motor1.run(FORWARD);

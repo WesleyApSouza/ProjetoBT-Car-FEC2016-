@@ -17,6 +17,7 @@ android:background="#ffffff">
         android:id="@+id/barFrente"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:max = "255"
         app:seekBarRotation="CW270"
         android:indeterminate="false" /> <!-- Rotation: CW90 or CW270 -->
 </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
@@ -29,6 +30,7 @@ android:background="#ffffff">
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:seekBarRotation="CW270"
+        android:max = "255"
         android:visibility="invisible"
         android:indeterminate="false" /> <!-- Rotation: CW90 or CW270 -->
 </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
