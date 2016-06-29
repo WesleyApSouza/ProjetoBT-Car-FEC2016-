@@ -42,6 +42,8 @@ void virar(String s){
     motor1.run(BACKWARD);
    else
     motor1.run(FORWARD);
+
+   cmd = 0;
 }
 
 void prepararDispositivo(){
@@ -91,6 +93,7 @@ void loop() {
   if(v == 0){
     motor1.run(RELEASE);
     velo = 0;
+   
   }
 
 }
