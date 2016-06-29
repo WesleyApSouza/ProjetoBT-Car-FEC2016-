@@ -113,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
         barFrente.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
                 enviaDados(seekBar,"D");
             }
 
@@ -132,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 enviaDados(seekBar,"R");
+
             }
 
             @Override
