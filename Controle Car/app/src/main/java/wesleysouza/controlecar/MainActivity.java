@@ -117,9 +117,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                enviaDados(seekBar,"D");
-            }
+            public void onStartTrackingTouch(SeekBar seekBar){ }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
@@ -135,9 +133,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                enviaDados(seekBar,"R");
-            }
+            public void onStartTrackingTouch(SeekBar seekBar) {}
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
@@ -151,20 +147,17 @@ public class MainActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 enviaDados(seekBar,"V");
                 mudaDirecao(seekBar);
+
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-                enviaDados(seekBar,"V");
-                mudaDirecao(seekBar);
-            }
-
+            public void onStartTrackingTouch(SeekBar seekBar) { }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 seekBar.setProgress(90);
                 enviaDados(seekBar,"V");
                 mudaDirecao(seekBar);
+
             }
 
         });
