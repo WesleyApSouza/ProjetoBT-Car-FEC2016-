@@ -10,7 +10,7 @@ void re(String s){
   
   s.remove(0, 1); // Retira o primeiro elemento que é uma letra R(re) deixando apenas uma sequencia de valores numericos
   v = s.toInt();
-  motor1.setSpeed(v); //Os valores para R variam entre 0 a 100, a potencia maxima do motor e 255. por isso a multiplicação por 25
+  motor1.setSpeed(v); //Os valores para R variam entre 0 a 255, a potencia maxima do motor e 255
   motor1.run(BACKWARD);
   
 }
@@ -52,7 +52,7 @@ String leitura(){
     }
     delay(1);
   }
-  return string; // string == primeiro elemento um letra R,D ou V, seguindo de uma sequencia de valores numericos entre 0 a 100 para R e D e de 0 a 180 para V
+  return string; // string == primeiro elemento um letra R,D ou V, seguindo de uma sequencia de valores numericos entre 0 a 255 para R e D e de 0 a 180 para V
 }
 
 void setup() {
