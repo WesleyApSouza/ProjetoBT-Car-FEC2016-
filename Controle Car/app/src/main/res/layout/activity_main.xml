@@ -144,5 +144,25 @@ android:background="#ffffff">
     android:layout_marginEnd="52dp"
     android:visibility="invisible"/>
 
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Farol"
+        android:id="@+id/idFarol"
+        android:checked="false"
+        android:layout_above="@+id/btnRe"
+        android:layout_alignLeft="@+id/idNeon"
+        android:layout_alignStart="@+id/idNeon" />
+
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Neon"
+        android:id="@+id/idNeon"
+        android:layout_below="@+id/idFarol"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:checked="false" />
+
 </RelativeLayout>
 
