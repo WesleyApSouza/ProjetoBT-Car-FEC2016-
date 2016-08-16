@@ -6,9 +6,8 @@
 #define Entrada2 7 //Ligado ao pino 7 do L293D  
 #define setaS 12
 #define setaD 8
-#define farol 13
-#define neon 11
-#define luzRe 4
+#define farol 4
+#define luzRe 13
 
 SoftwareSerial leBluetooth(14 , 15); // rx , tx
 Servo meuServo;
@@ -68,32 +67,11 @@ void preparaVariaveis() {
   pinMode(setaS, OUTPUT);
   pinMode(setaD, OUTPUT);
   pinMode(farol, OUTPUT);
-  pinMode(neon, OUTPUT);
   pinMode(luzRe, OUTPUT);
   meuServo.attach(10);
 }
-
-void processamento(String dado) {
+void piscaSetas(){
   unsigned long atualMillis = millis();
-  char aux = dado.charAt(0);
-
-  if (aux == 'R') { // Dar Ré
-    digitalWrite(luzRe, HIGH);
-    re(dado);
-  } else if (aux == 'D') { // ir para frente
-    digitalWrite(luzRe, LOW);
-    acelerar(dado);
-  } else if (aux == 'V') { // virar
-    virar(dado);
-  } else if (dado.equals("FT")) {
-    digitalWrite(farol, HIGH);
-  } else if (dado.equals("FF")) {
-    digitalWrite(farol, LOW);
-  } else if (dado.equals("NT")) {
-    digitalWrite(neon, HIGH);
-  } else if (dado.equals("NF")) {
-    digitalWrite(neon, LOW);
-  }
   if (estado != 90) {
 
     if (atualMillis - previousMillis > interval) {
@@ -124,16 +102,35 @@ void processamento(String dado) {
   if (estado == 90 && valor == 1) {
     digitalWrite(setaD, LOW);
     digitalWrite(setaS, LOW);
+  } 
+}
+
+void processamento(String dado) {
+  char aux = dado.charAt(0);
+
+  if (aux == 'R') { // Dar Ré
+    digitalWrite(luzRe, HIGH);
+    re(dado);
+  } else if (aux == 'D') { // ir para frente
+    digitalWrite(luzRe, LOW);
+    acelerar(dado);
+  } else if (aux == 'V') { // virar
+    virar(dado);
+  } else if (dado.equals("FT")) { // farol Ligado
+    digitalWrite(farol, HIGH);
+  } else if (dado.equals("FF")) { // farol desligado
+    digitalWrite(farol, LOW);
   }
 }
 
 void setup() {
   Serial.begin(9600);
   leBluetooth.begin(9600);
-  preparaVariaveis();
+  preparaVariaveis(); // Configura entras e saidas do Arduino
 }
 
 void loop() {
-  String dado = leitura();
-  processamento(dado);
+  String dado = leitura(); // Efetua a leitura dos dados enviados via Bluetooth
+  processamento(dado); // Processa os dado recebido e executa o comando definido
+  piscaSetas();
 }
