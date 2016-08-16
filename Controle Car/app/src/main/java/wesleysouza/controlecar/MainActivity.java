@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,8 +22,6 @@ public class MainActivity extends AppCompatActivity {
     private Button btnDesconectar;
     private TextView txtTest;
     private TextView txtIndicaPos;
-    private RadioButton RBFarol;
-    private RadioButton RBNeon;
     private BluetoothAdapter meuBluetooth = null;
     private static final int SOLICITA_ATIVAÇÃO = 1;
     private static final int SOLICITA_CONEXAO = 2;
@@ -32,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     private static String MAC = null;
     private boolean isBtConnected = false;
     private ConectarDispositivo cd = null;
-    int test = 0;
     @Override
     protected void onCreate(final Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -48,12 +44,9 @@ public class MainActivity extends AppCompatActivity {
         btnParado = (Button) findViewById(R.id.btnParado);
         btnRe = (Button) findViewById(R.id.btnRe);
         btnFrente = (Button) findViewById(R.id.btnFrente);
-        final Button btnListaConexao = (Button) findViewById(R.id.btnListaConexao);
+        Button btnListaConexao = (Button) findViewById(R.id.btnListaConexao);
         btnConnect = (Button) findViewById(R.id.btnConnect);
         btnDesconectar = (Button) findViewById(R.id.btnDesconectar);
-        RBFarol = (RadioButton) findViewById(R.id.idFarol);
-        RBNeon = (RadioButton) findViewById(R.id.idNeon);
-
         meuBluetooth = BluetoothAdapter.getDefaultAdapter();
         barRe.setEnabled(false);
         barFrente.setEnabled(false);
@@ -66,38 +59,7 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(ativaBluetooth, SOLICITA_ATIVAÇÃO);
         }
 
-        RBFarol.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!RBFarol.isSelected()){
-                    RBFarol.setChecked(true);
-                    RBFarol.setSelected(true);
-                    enviaDados("FT");
 
-                }else{
-                    RBFarol.setChecked(false);
-                    RBFarol.setSelected(false);
-                    enviaDados("FF");
-
-                }
-            }
-        });
-        RBNeon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!RBNeon.isSelected()){
-                    RBNeon.setChecked(true);
-                    RBNeon.setSelected(true);
-                    enviaDados("NT");
-
-                }else{
-                    RBNeon.setChecked(false);
-                    RBNeon.setSelected(false);
-                     enviaDados("NF");
-
-                }
-            }
-        });
         btnDesconectar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
                     cd.close();
                     btnDesconectar.setVisibility(View.INVISIBLE);
                     btnConnect.setVisibility(View.VISIBLE);
-                    btnListaConexao.setEnabled(true);
                     reseta();
                     Toast.makeText(getApplicationContext(),"Desconectado com sucesso",Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
@@ -124,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
                             isBtConnected = true;
                             btnConnect.setVisibility(View.INVISIBLE);
                             btnDesconectar.setVisibility(View.VISIBLE);
-                            btnListaConexao.setEnabled(false);
                             Toast.makeText(getApplicationContext(),"Conectado com Sucesso!",Toast.LENGTH_SHORT).show();
 
                         }
@@ -153,11 +113,14 @@ public class MainActivity extends AppCompatActivity {
         barFrente.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
                 enviaDados(seekBar,"D");
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar){ }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                enviaDados(seekBar,"D");
+            }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
@@ -169,11 +132,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 enviaDados(seekBar,"R");
-
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                enviaDados(seekBar,"R");
+            }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
@@ -187,17 +151,20 @@ public class MainActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 enviaDados(seekBar,"V");
                 mudaDirecao(seekBar);
-
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) { }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+                enviaDados(seekBar,"V");
+                mudaDirecao(seekBar);
+            }
+
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 seekBar.setProgress(90);
                 enviaDados(seekBar,"V");
                 mudaDirecao(seekBar);
-
             }
 
         });
@@ -283,16 +250,6 @@ public class MainActivity extends AppCompatActivity {
         try{
             if(isBtConnected)
                 cd.enviarDado(String.valueOf(chave+seekBar.getProgress()).getBytes());
-
-        } catch (IOException e) {
-            Toast.makeText(getApplicationContext(),"Erro, ao enviar dados via Bluetooth",Toast.LENGTH_LONG).show();
-        }
-
-    }
-    private void enviaDados(String dado){
-        try{
-            if(isBtConnected)
-                cd.enviarDado(dado.getBytes());
 
         } catch (IOException e) {
             Toast.makeText(getApplicationContext(),"Erro, ao enviar dados via Bluetooth",Toast.LENGTH_LONG).show();

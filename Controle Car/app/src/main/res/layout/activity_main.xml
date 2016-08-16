@@ -17,8 +17,8 @@ android:background="#ffffff">
         android:id="@+id/barFrente"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:max = "255"
         app:seekBarRotation="CW270"
+        android:max="255"
         android:indeterminate="false" /> <!-- Rotation: CW90 or CW270 -->
 </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
 
@@ -30,8 +30,8 @@ android:background="#ffffff">
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:seekBarRotation="CW270"
-        android:max = "255"
         android:visibility="invisible"
+        android:max="255"
         android:indeterminate="false" /> <!-- Rotation: CW90 or CW270 -->
 </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
 
@@ -95,7 +95,7 @@ android:background="#ffffff">
 <Button
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="lista_conex_es"
+    android:text="lista_conexoes"
     android:id="@+id/btnListaConexao"
     android:layout_alignParentBottom="true"
     android:layout_alignRight="@+id/barDirection"
@@ -143,26 +143,6 @@ android:background="#ffffff">
     android:layout_marginRight="52dp"
     android:layout_marginEnd="52dp"
     android:visibility="invisible"/>
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Farol"
-        android:id="@+id/idFarol"
-        android:checked="false"
-        android:layout_above="@+id/btnRe"
-        android:layout_alignLeft="@+id/idNeon"
-        android:layout_alignStart="@+id/idNeon" />
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Neon"
-        android:id="@+id/idNeon"
-        android:layout_below="@+id/idFarol"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:checked="false" />
 
 </RelativeLayout>
 
