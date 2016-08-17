@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +16,7 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
     private SeekBar barFrente;
     private SeekBar barRe;
+    private RadioButton rbFarol;
     private Button btnParado;
     private Button btnFrente;
     private Button btnRe;
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private static String MAC = null;
     private boolean isBtConnected = false;
     private ConectarDispositivo cd = null;
+    int teste = 0;
     @Override
     protected void onCreate(final Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -36,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
 
         txtTest = (TextView) findViewById(R.id.txtTestBar);
         txtIndicaPos = (TextView) findViewById(R.id.btnTxtIndicaPos);
+
+        rbFarol = (RadioButton) findViewById(R.id.rbFarol);
 
         barFrente = (SeekBar) findViewById(R.id.barFrente);
         barRe = (SeekBar) findViewById(R.id.barRe);
@@ -59,6 +64,22 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(ativaBluetooth, SOLICITA_ATIVAÇÃO);
         }
 
+        rbFarol.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(teste == 1){
+                    rbFarol.setChecked(false);
+                    enviaDados("FF");
+                    teste = 0;
+                }else
+                {
+                    enviaDados("FT");
+                    rbFarol.setChecked(true);
+                    teste = 1;
+                }
+
+            }
+        });
 
         btnDesconectar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -245,7 +266,15 @@ public class MainActivity extends AppCompatActivity {
             txtIndicaPos.setText("Frente");
         }
     }
+    private void enviaDados(String dado){
+        try {
+            cd.enviarDado(dado.getBytes());
+        }catch (IOException e){
+            Toast.makeText(getApplicationContext(),"Erro, ao enviar dados via Bluetooth",Toast.LENGTH_LONG).show();
+        }
 
+
+    }
     private void enviaDados(SeekBar seekBar,String chave){
         try{
             if(isBtConnected)

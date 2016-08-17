@@ -144,5 +144,15 @@ android:background="#ffffff">
     android:layout_marginEnd="52dp"
     android:visibility="invisible"/>
 
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Farol"
+        android:id="@+id/rbFarol"
+        android:layout_below="@+id/txtTestBar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:checked="false" />
+
 </RelativeLayout>
 
