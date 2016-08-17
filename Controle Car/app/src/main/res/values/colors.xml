@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="Red">#FF3300</color>
+    <color name="colorPrimary">#777777</color>
+    <color name="colorPrimaryDark">#555555</color>
+    <color name="colorAccent">#FFFFFF</color>
+    <color name="marcaBotao">#BBBBBB</color>
     <color name="Cinza">#585858</color>
     <color name="PretoDark">#000000</color>
     <color name="PretoCinza">#424242</color>

@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         barFrente = (SeekBar) findViewById(R.id.barFrente);
         barRe = (SeekBar) findViewById(R.id.barRe);
-        SeekBar barDirection = (SeekBar) findViewById(R.id.barDirection);
+        final SeekBar barDirection = (SeekBar) findViewById(R.id.barDirection);
 
         btnParado = (Button) findViewById(R.id.btnParado);
         btnRe = (Button) findViewById(R.id.btnRe);
@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
                     btnDesconectar.setVisibility(View.INVISIBLE);
                     btnConnect.setVisibility(View.VISIBLE);
                     reseta();
+                    rbFarol.setEnabled(false);
                     Toast.makeText(getApplicationContext(),"Desconectado com sucesso",Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     Toast.makeText(getApplicationContext(),"ERRO; Ao desconectar com o Modulo Bluetooth",Toast.LENGTH_SHORT).show();
@@ -106,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
                             isBtConnected = true;
                             btnConnect.setVisibility(View.INVISIBLE);
                             btnDesconectar.setVisibility(View.VISIBLE);
+                            rbFarol.setEnabled(true);
                             Toast.makeText(getApplicationContext(),"Conectado com Sucesso!",Toast.LENGTH_SHORT).show();
 
                         }
@@ -150,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         barRe.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 enviaDados(seekBar,"R");
@@ -192,9 +195,9 @@ public class MainActivity extends AppCompatActivity {
         btnParado.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnParado.setBackgroundResource(R.color.Red);
-                btnFrente.setBackgroundResource(R.color.colorPrimaryDark);
-                btnRe.setBackgroundResource(R.color.colorPrimaryDark);
+                btnParado.setBackgroundResource(R.drawable.botaoclick);
+                btnFrente.setBackgroundResource(R.drawable.botao);
+                btnRe.setBackgroundResource(R.drawable.botao);
                 barRe.setEnabled(false);
                 barFrente.setEnabled(false);
             }
@@ -202,9 +205,9 @@ public class MainActivity extends AppCompatActivity {
         btnRe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnParado.setBackgroundResource(R.color.colorPrimaryDark);
-                btnFrente.setBackgroundResource(R.color.colorPrimaryDark);
-                btnRe.setBackgroundResource(R.color.Red);
+                btnParado.setBackgroundResource(R.drawable.botao);
+                btnFrente.setBackgroundResource(R.drawable.botao);
+                btnRe.setBackgroundResource(R.drawable.botaoclick);
 
                 barRe.setEnabled(true);
                 barRe.setVisibility(View.VISIBLE);
@@ -214,9 +217,9 @@ public class MainActivity extends AppCompatActivity {
         btnFrente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnParado.setBackgroundResource(R.color.colorPrimaryDark);
-                btnFrente.setBackgroundResource(R.color.Red);
-                btnRe.setBackgroundResource(R.color.colorPrimaryDark);
+                btnParado.setBackgroundResource(R.drawable.botao);
+                btnFrente.setBackgroundResource(R.drawable.botaoclick);
+                btnRe.setBackgroundResource(R.drawable.botao);
 
                 barFrente.setEnabled(true);
                 barRe.setVisibility(View.INVISIBLE);
