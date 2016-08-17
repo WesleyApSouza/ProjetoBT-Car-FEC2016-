@@ -150,7 +150,10 @@ android:background="@drawable/degrade">
         android:layout_height="wrap_content"
         android:text="Farol"
         android:id="@+id/rbFarol"
+<<<<<<< HEAD
         android:enabled="false"
+=======
+>>>>>>> a079f3d38c56992f9d939f321af03e235bab445c
         android:layout_below="@+id/txtTestBar"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
