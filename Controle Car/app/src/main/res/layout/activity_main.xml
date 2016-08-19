@@ -15,70 +15,21 @@ android:background="@drawable/degrade">
     <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
         android:id="@+id/barFrente"
         android:layout_width="0dp"
+        android:progress="127"
         android:layout_height="0dp"
         app:seekBarRotation="CW270"
         android:max="255"
         android:indeterminate="false" /> <!-- Rotation: CW90 or CW270 -->
 </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
 
-<com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
-    android:layout_width="wrap_content"
-    android:layout_height="fill_parent">
-    <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
-        android:id="@+id/barRe"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:seekBarRotation="CW270"
-        android:visibility="invisible"
-        android:max="255"
-        android:indeterminate="false" /> <!-- Rotation: CW90 or CW270 -->
-</com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
-
-<Button
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="P"
-    android:id="@+id/btnParado"
-    android:layout_marginLeft="30dp"
-    android:layout_marginStart="30dp"
-    android:layout_above="@+id/btnRe"
-    android:layout_toRightOf="@+id/view"
-    android:layout_toEndOf="@+id/view"
-    android:background="@drawable/botao"
-    android:textColor="#000000" />
-
-<Button
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="R"
-    android:id="@+id/btnRe"
-    android:layout_marginTop="0dp"
-    android:layout_above="@+id/btnFrente"
-    android:layout_alignLeft="@+id/btnParado"
-    android:layout_alignStart="@+id/btnParado"
-    android:background="@drawable/botao"
-    android:textColor="#000000" />
-
-<Button
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="D"
-    android:layout_marginTop="0dp"
-    android:id="@+id/btnFrente"
-    android:layout_centerVertical="true"
-    android:layout_alignLeft="@+id/btnRe"
-    android:layout_alignStart="@+id/btnRe"
-    android:background="@drawable/botao"
-    android:textColor="#000000" />
-
-<SeekBar
+    <SeekBar
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/barDirection"
     android:progress="90"
-    android:layout_below="@+id/btnFrente"
     android:layout_marginLeft="192dp"
-    android:max="180"/>
+    android:max="180"
+    android:layout_centerVertical="true" />
 
 <TextView
     android:layout_width="wrap_content"
@@ -86,12 +37,10 @@ android:background="@drawable/degrade">
     android:textAppearance="?android:attr/textAppearanceSmall"
     android:text="frente"
     android:id="@+id/btnTxtIndicaPos"
-    android:layout_alignBottom="@+id/btnRe"
-    android:layout_alignLeft="@+id/barDirection"
-    android:layout_alignStart="@+id/barDirection"
-    android:layout_marginLeft="57dp"
-    android:layout_marginStart="57dp"
-    android:textColor="#000000" />
+    android:textColor="#000000"
+    android:layout_above="@+id/barDirection"
+    android:layout_toLeftOf="@+id/btnListaConexao"
+    android:layout_toStartOf="@+id/btnListaConexao" />
 
 <Button
     android:layout_width="wrap_content"
@@ -115,7 +64,7 @@ android:background="@drawable/degrade">
     android:layout_toStartOf="@+id/btnListaConexao"
     android:textSize="18sp"
     android:layout_alignParentTop="true"
-    android:layout_above="@+id/btnParado" />
+    android:layout_centerVertical="true" />
 
 <Button
     android:layout_width="wrap_content"
@@ -150,14 +99,23 @@ android:background="@drawable/degrade">
         android:layout_height="wrap_content"
         android:text="Farol"
         android:id="@+id/rbFarol"
-<<<<<<< HEAD
-        android:enabled="false"
-=======
->>>>>>> a079f3d38c56992f9d939f321af03e235bab445c
-        android:layout_below="@+id/txtTestBar"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:checked="false" />
+        android:layout_above="@+id/barDirection"
+        android:layout_alignRight="@+id/barDirection"
+        android:layout_alignEnd="@+id/barDirection"
+        android:layout_marginBottom="79dp"
+        android:enabled="false"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Parado"
+        android:id="@+id/txtFD"
+        android:layout_alignTop="@+id/barDirection"
+        android:layout_toRightOf="@+id/view"
+        android:layout_toEndOf="@+id/view"
+        android:layout_marginLeft="66dp"
+        android:layout_marginStart="66dp" />
 
 </RelativeLayout>
 

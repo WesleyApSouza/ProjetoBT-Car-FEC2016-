@@ -15,11 +15,9 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private SeekBar barFrente;
-    private SeekBar barRe;
     private RadioButton rbFarol;
-    private Button btnParado;
-    private Button btnFrente;
-    private Button btnRe;
+
+    private TextView txtFD;
     private Button btnConnect;
     private Button btnDesconectar;
     private TextView txtTest;
@@ -39,22 +37,16 @@ public class MainActivity extends AppCompatActivity {
 
         txtTest = (TextView) findViewById(R.id.txtTestBar);
         txtIndicaPos = (TextView) findViewById(R.id.btnTxtIndicaPos);
-
+        txtFD = (TextView) findViewById(R.id.txtFD);
         rbFarol = (RadioButton) findViewById(R.id.rbFarol);
 
         barFrente = (SeekBar) findViewById(R.id.barFrente);
-        barRe = (SeekBar) findViewById(R.id.barRe);
         final SeekBar barDirection = (SeekBar) findViewById(R.id.barDirection);
 
-        btnParado = (Button) findViewById(R.id.btnParado);
-        btnRe = (Button) findViewById(R.id.btnRe);
-        btnFrente = (Button) findViewById(R.id.btnFrente);
         Button btnListaConexao = (Button) findViewById(R.id.btnListaConexao);
         btnConnect = (Button) findViewById(R.id.btnConnect);
         btnDesconectar = (Button) findViewById(R.id.btnDesconectar);
         meuBluetooth = BluetoothAdapter.getDefaultAdapter();
-        barRe.setEnabled(false);
-        barFrente.setEnabled(false);
 
 
         if (meuBluetooth == null) {
@@ -136,95 +128,68 @@ public class MainActivity extends AppCompatActivity {
         barFrente.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-                enviaDados(seekBar,"D");
+                if(progress > 127) {
+                    double conta = (progress - 127.5) *2;
+                    enviaDados((int)conta, "D");
+                    txtFD.setText("Acelera");
+                }else if (progress < 127){
+                    int conta = 255 - (progress * 2);
+                    enviaDados(conta, "R");
+                    txtFD.setText("RÉ");
+                }else{
+                    txtFD.setText("Parado");
+                    enviaDados(0,"D");
+                }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                enviaDados(seekBar,"D");
+                if(seekBar.getProgress() > 127) {
+                    int conta = (seekBar.getProgress() - 127) *2;
+                    //seekBar.setProgress(conta);
+                    enviaDados(conta, "D");
+                    txtFD.setText("Acelera");
+                }else if (seekBar.getProgress() < 127){
+                    int conta = 255 - (seekBar.getProgress() * 2);
+                    //seekBar.setProgress(conta);
+                    enviaDados(conta, "R");
+                    txtFD.setText("RÉ");
+                }else{
+                    enviaDados(0,"D");
+                    txtFD.setText("Parado");
+                }
+
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                seekBar.setProgress(0);
-                enviaDados(seekBar,"D");
-            }
-        });
-        barRe.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                enviaDados(seekBar,"R");
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                enviaDados(seekBar,"R");
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                seekBar.setProgress(0);
-                enviaDados(seekBar,"R");
+                seekBar.setProgress(127);
+                txtFD.setText("Parado");
+                enviaDados(0,"D");
             }
         });
         assert barDirection != null;
         barDirection.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                enviaDados(seekBar,"V");
+                enviaDados(seekBar.getProgress(),"V");
                 mudaDirecao(seekBar);
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
 
-                enviaDados(seekBar,"V");
+                enviaDados(seekBar.getProgress(),"V");
                 mudaDirecao(seekBar);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 seekBar.setProgress(90);
-                enviaDados(seekBar,"V");
+                enviaDados(seekBar.getProgress(),"V");
                 mudaDirecao(seekBar);
             }
 
-        });
-        btnParado.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btnParado.setBackgroundResource(R.drawable.botaoclick);
-                btnFrente.setBackgroundResource(R.drawable.botao);
-                btnRe.setBackgroundResource(R.drawable.botao);
-                barRe.setEnabled(false);
-                barFrente.setEnabled(false);
-            }
-        });
-        btnRe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btnParado.setBackgroundResource(R.drawable.botao);
-                btnFrente.setBackgroundResource(R.drawable.botao);
-                btnRe.setBackgroundResource(R.drawable.botaoclick);
-
-                barRe.setEnabled(true);
-                barRe.setVisibility(View.VISIBLE);
-                barFrente.setVisibility(View.INVISIBLE);
-            }
-        });
-        btnFrente.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btnParado.setBackgroundResource(R.drawable.botao);
-                btnFrente.setBackgroundResource(R.drawable.botaoclick);
-                btnRe.setBackgroundResource(R.drawable.botao);
-
-                barFrente.setEnabled(true);
-                barRe.setVisibility(View.INVISIBLE);
-                barFrente.setVisibility(View.VISIBLE);
-            }
         });
     }
 
@@ -278,10 +243,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    private void enviaDados(SeekBar seekBar,String chave){
+    private void enviaDados(int dado,String chave){
         try{
             if(isBtConnected)
-                cd.enviarDado(String.valueOf(chave+seekBar.getProgress()).getBytes());
+                cd.enviarDado(String.valueOf(chave+dado).getBytes());
 
         } catch (IOException e) {
             Toast.makeText(getApplicationContext(),"Erro, ao enviar dados via Bluetooth",Toast.LENGTH_LONG).show();
