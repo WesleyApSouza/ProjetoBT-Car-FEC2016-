@@ -7,13 +7,15 @@
 #define setaS 12
 #define setaD 8
 #define farol 4
-#define luzRe 13
+#define luzRe 11
+#define buzina 13
 
 SoftwareSerial leBluetooth(14 , 15); // rx , tx
 Servo meuServo;
 int v = 0;
 int estado = 90;
 int valor = LOW;
+int lr = 0;
 
 long previousMillis = 0;
 long interval = 1000;
@@ -35,6 +37,11 @@ void acelerar(String s) {
   digitalWrite(Entrada1, LOW);
   digitalWrite(Entrada2, HIGH);
 
+}
+void parar(){
+  analogWrite(PinoVelocidade,0);
+  digitalWrite(Entrada1, LOW);
+  digitalWrite(Entrada2, LOW);
 }
 
 void virar(String s) {
@@ -68,6 +75,7 @@ void preparaVariaveis() {
   pinMode(setaD, OUTPUT);
   pinMode(farol, OUTPUT);
   pinMode(luzRe, OUTPUT);
+  pinMode(buzina, OUTPUT);
   meuServo.attach(10);
 }
 void piscaSetas(){
@@ -112,14 +120,28 @@ void processamento(String dado) {
     digitalWrite(luzRe, HIGH);
     re(dado);
   } else if (aux == 'D') { // ir para frente
-    digitalWrite(luzRe, LOW);
+    if(lr == 0){
+        digitalWrite(luzRe, LOW);
+    }else{
+      analogWrite(luzRe,30);
+    }
     acelerar(dado);
   } else if (aux == 'V') { // virar
     virar(dado);
-  } else if (dado.equals("FT")) { // farol Ligado
+  } else if(dado.equals("P")){
+     parar();
+  }else if (dado.equals("FT")) { // farol Ligado
+    lr = 1;
     digitalWrite(farol, HIGH);
+    analogWrite(luzRe,30);
   } else if (dado.equals("FF")) { // farol desligado
+    lr = 0;
     digitalWrite(farol, LOW);
+    digitalWrite(luzRe,LOW);
+  } else if(dado.equals("BT")){
+    tone(buzina, 200);
+  }else if(dado.equals("BF")){
+    noTone(buzina);
   }
 }
 

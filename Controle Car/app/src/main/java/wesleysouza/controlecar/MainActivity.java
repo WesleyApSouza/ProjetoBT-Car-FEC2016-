@@ -1,13 +1,15 @@
 package wesleysouza.controlecar;
 
+
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RadioButton;
+import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,11 +17,12 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private SeekBar barFrente;
-    private RadioButton rbFarol;
-
+    private SeekBar barDirection;
+    private CheckBox cbFarol;
     private TextView txtFD;
     private Button btnConnect;
     private Button btnDesconectar;
+    private Button btnBuzina;
     private TextView txtTest;
     private TextView txtIndicaPos;
     private BluetoothAdapter meuBluetooth = null;
@@ -29,26 +32,25 @@ public class MainActivity extends AppCompatActivity {
     private static String MAC = null;
     private boolean isBtConnected = false;
     private ConectarDispositivo cd = null;
-    int teste = 0;
+    private IenviaDados Ied = null;
     @Override
-    protected void onCreate(final Bundle savedInstanceState){
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         txtTest = (TextView) findViewById(R.id.txtTestBar);
         txtIndicaPos = (TextView) findViewById(R.id.btnTxtIndicaPos);
-        txtFD = (TextView) findViewById(R.id.txtFD);
-        rbFarol = (RadioButton) findViewById(R.id.rbFarol);
 
+        cbFarol = (CheckBox) findViewById(R.id.cbFarol);
         barFrente = (SeekBar) findViewById(R.id.barFrente);
-        final SeekBar barDirection = (SeekBar) findViewById(R.id.barDirection);
-
+        barDirection = (SeekBar) findViewById(R.id.barDirection);
+        txtFD = (TextView) findViewById(R.id.txtFD);
         Button btnListaConexao = (Button) findViewById(R.id.btnListaConexao);
         btnConnect = (Button) findViewById(R.id.btnConnect);
         btnDesconectar = (Button) findViewById(R.id.btnDesconectar);
         meuBluetooth = BluetoothAdapter.getDefaultAdapter();
-
-
+        btnBuzina = (Button) findViewById(R.id.btnBuzina);
+        liberaComponente(false);
         if (meuBluetooth == null) {
             Toast.makeText(getApplicationContext(), "Seu dispositivo não possui bluetooth", Toast.LENGTH_LONG).show();
         } else if (!meuBluetooth.isEnabled()) {
@@ -56,20 +58,52 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(ativaBluetooth, SOLICITA_ATIVAÇÃO);
         }
 
-        rbFarol.setOnClickListener(new View.OnClickListener() {
+        cbFarol.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(teste == 1){
-                    rbFarol.setChecked(false);
-                    enviaDados("FF");
-                    teste = 0;
-                }else
-                {
-                    enviaDados("FT");
-                    rbFarol.setChecked(true);
-                    teste = 1;
+                Ied = new EnviaDados(cd);
+                if (cbFarol.isChecked()) {
+                    try {
+                        Ied.enviaDados("FT");
+                    } catch (IOException e) {
+                        Toast.makeText(getApplicationContext(), "Erro, ao enviar dados via Bluetooth", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    try {
+                        Ied.enviaDados("FF");
+                    } catch (IOException e) {
+                        Toast.makeText(getApplicationContext(), "Erro, ao enviar dados via Bluetooth", Toast.LENGTH_LONG).show();
+                    }
                 }
+            }
+        });
 
+        btnBuzina.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        if (isBtConnected) {
+                            Ied = new EnviaDados(cd);
+                            try {
+                                Ied.enviaDados("BT");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (isBtConnected) {
+                            Ied = new EnviaDados(cd);
+                            try {
+                                Ied.enviaDados("BF");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        break;
+                }
+                return false;
             }
         });
 
@@ -81,10 +115,10 @@ public class MainActivity extends AppCompatActivity {
                     btnDesconectar.setVisibility(View.INVISIBLE);
                     btnConnect.setVisibility(View.VISIBLE);
                     reseta();
-                    rbFarol.setEnabled(false);
-                    Toast.makeText(getApplicationContext(),"Desconectado com sucesso",Toast.LENGTH_SHORT).show();
+                    liberaComponente(false);
+                    Toast.makeText(getApplicationContext(), "Desconectado com sucesso", Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
-                    Toast.makeText(getApplicationContext(),"ERRO; Ao desconectar com o Modulo Bluetooth",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "ERRO; Ao desconectar com o Modulo Bluetooth", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -92,22 +126,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    if(conexao) {
+                    if (conexao) {
                         if (!isBtConnected) {
-                            cd = new ConectarDispositivo(meuBluetooth,MAC);
+                            cd = new ConectarDispositivo(meuBluetooth, MAC);
                             cd.conectar();
                             isBtConnected = true;
+                            liberaComponente(true);
                             btnConnect.setVisibility(View.INVISIBLE);
                             btnDesconectar.setVisibility(View.VISIBLE);
-                            rbFarol.setEnabled(true);
-                            Toast.makeText(getApplicationContext(),"Conectado com Sucesso!",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Conectado com Sucesso!", Toast.LENGTH_SHORT).show();
 
                         }
-                    }else{
-                        Toast.makeText(getApplicationContext(),"Selecione um dispositivo!!",Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Selecione um dispositivo!!", Toast.LENGTH_SHORT).show();
                     }
-                }catch (IOException e){
-                    Toast.makeText(getApplicationContext(),"ERRO Conexao",Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    Toast.makeText(getApplicationContext(), "ERRO Conexão, checar se o modulo Bluetooth está ligado!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -121,41 +155,80 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-        }catch (NullPointerException ignored){
+        } catch (NullPointerException ignored) {
 
         }
 
         barFrente.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(progress > 127) {
-                    double conta = (progress - 127.5) *2;
-                    enviaDados((int)conta, "D");
+                Ied = new EnviaDados(cd);
+                if (progress > 127) {
+                    double conta = (progress - 127.5) * 2;
+                    if (isBtConnected) {
+                        try {
+                            Ied.enviaDados((int) conta, "D");
+                        } catch (IOException e) {
+                            Toast.makeText(getApplicationContext(), "Erro, ao enviar dados via Bluetooth", Toast.LENGTH_LONG).show();
+                        }
+                    }
                     txtFD.setText("Acelera");
-                }else if (progress < 127){
+                } else if (progress < 127) {
                     int conta = 255 - (progress * 2);
-                    enviaDados(conta, "R");
+
+                    if (isBtConnected) {
+                        try {
+                            Ied.enviaDados(conta, "R");
+                        } catch (IOException e) {
+                            Toast.makeText(getApplicationContext(), "Erro, ao enviar dados via Bluetooth", Toast.LENGTH_LONG).show();
+                        }
+                    }
                     txtFD.setText("RÉ");
-                }else{
+                } else {
                     txtFD.setText("Parado");
-                    enviaDados(0,"D");
+                    if (isBtConnected) {
+                        try {
+                            Ied.enviaDados(0, "D");
+                        } catch (IOException e) {
+                            Toast.makeText(getApplicationContext(), "Erro, ao enviar dados via Bluetooth", Toast.LENGTH_LONG).show();
+                        }
+                    }
                 }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                if(seekBar.getProgress() > 127) {
-                    int conta = (seekBar.getProgress() - 127) *2;
-                    //seekBar.setProgress(conta);
-                    enviaDados(conta, "D");
+                Ied = new EnviaDados(cd);
+                if (seekBar.getProgress() > 127) {
+                    int conta = (seekBar.getProgress() - 127) * 2;
+
+                    if (isBtConnected) {
+                        try {
+                            Ied.enviaDados(conta, "D");
+                        } catch (IOException e) {
+                            Toast.makeText(getApplicationContext(), "Erro, ao enviar dados via Bluetooth", Toast.LENGTH_LONG).show();
+                        }
+                    }
                     txtFD.setText("Acelera");
-                }else if (seekBar.getProgress() < 127){
+                } else if (seekBar.getProgress() < 127) {
                     int conta = 255 - (seekBar.getProgress() * 2);
-                    //seekBar.setProgress(conta);
-                    enviaDados(conta, "R");
+
+                    if (isBtConnected) {
+                        try {
+                            Ied.enviaDados(conta, "D");
+                        } catch (IOException e) {
+                            Toast.makeText(getApplicationContext(), "Erro, ao enviar dados via Bluetooth", Toast.LENGTH_LONG).show();
+                        }
+                    }
                     txtFD.setText("RÉ");
-                }else{
-                    enviaDados(0,"D");
+                } else {
+                    if (isBtConnected) {
+                        try {
+                            Ied.enviaDados(0, "D");
+                        } catch (IOException e) {
+                            Toast.makeText(getApplicationContext(), "Erro, ao enviar dados via Bluetooth", Toast.LENGTH_LONG).show();
+                        }
+                    }
                     txtFD.setText("Parado");
                 }
 
@@ -165,28 +238,54 @@ public class MainActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 seekBar.setProgress(127);
                 txtFD.setText("Parado");
-                enviaDados(0,"D");
+                if (isBtConnected) {
+                    try {
+                        Ied.enviaDados("P");
+                    } catch (IOException e) {
+                        Toast.makeText(getApplicationContext(), "Erro, ao enviar dados via Bluetooth", Toast.LENGTH_LONG).show();
+                    }
+                }
             }
         });
         assert barDirection != null;
         barDirection.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                enviaDados(seekBar.getProgress(),"V");
+                Ied = new EnviaDados(cd);
+                if (isBtConnected) {
+                    try {
+                        Ied.enviaDados(seekBar.getProgress(), "V");
+                    } catch (IOException e) {
+                        Toast.makeText(getApplicationContext(), "Erro, ao enviar dados via Bluetooth", Toast.LENGTH_LONG).show();
+                    }
+                }
                 mudaDirecao(seekBar);
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
-                enviaDados(seekBar.getProgress(),"V");
+                Ied = new EnviaDados(cd);
+                if (isBtConnected) {
+                    try {
+                        Ied.enviaDados(seekBar.getProgress(), "V");
+                    } catch (IOException e) {
+                        Toast.makeText(getApplicationContext(), "Erro, ao enviar dados via Bluetooth", Toast.LENGTH_LONG).show();
+                    }
+                }
                 mudaDirecao(seekBar);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 seekBar.setProgress(90);
-                enviaDados(seekBar.getProgress(),"V");
+                Ied = new EnviaDados(cd);
+                if (isBtConnected) {
+                    try {
+                        Ied.enviaDados(seekBar.getProgress(), "V");
+                    } catch (IOException e) {
+                        Toast.makeText(getApplicationContext(), "Erro, ao enviar dados via Bluetooth", Toast.LENGTH_LONG).show();
+                    }
+                }
                 mudaDirecao(seekBar);
             }
 
@@ -199,6 +298,7 @@ public class MainActivity extends AppCompatActivity {
         MAC = null;
         txtTest.setText("Dispositivo: nenhum");
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
@@ -215,9 +315,10 @@ public class MainActivity extends AppCompatActivity {
                 if (resultCode == Activity.RESULT_OK) {
                     MAC = data.getExtras().getString(ListaDispositivos.ENDERECO_MEC);
                     conexao = true;
-                    txtTest.setText("Dispositivo: "+MAC);
+                    txtTest.setText("Dispositivo: " + MAC);
 
                     Toast.makeText(getApplicationContext(), "MAC FINAL:" + MAC, Toast.LENGTH_SHORT).show();
+                    btnConnect.setEnabled(true);
 
                 } else {
                     Toast.makeText(getApplicationContext(), "FALHA AO OBTER O MAC", Toast.LENGTH_SHORT).show();
@@ -225,33 +326,22 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
-    private void mudaDirecao(SeekBar seekBar){
-        if(seekBar.getProgress() > 90){
+
+    private void mudaDirecao(SeekBar seekBar) {
+        if (seekBar.getProgress() > 90) {
             txtIndicaPos.setText("Direita");
-        }else if(seekBar.getProgress()< 90){
+        } else if (seekBar.getProgress() < 90) {
             txtIndicaPos.setText("Esquerda");
-        }else{
+        } else {
             txtIndicaPos.setText("Frente");
         }
     }
-    private void enviaDados(String dado){
-        try {
-            cd.enviarDado(dado.getBytes());
-        }catch (IOException e){
-            Toast.makeText(getApplicationContext(),"Erro, ao enviar dados via Bluetooth",Toast.LENGTH_LONG).show();
-        }
-
-
-    }
-    private void enviaDados(int dado,String chave){
-        try{
-            if(isBtConnected)
-                cd.enviarDado(String.valueOf(chave+dado).getBytes());
-
-        } catch (IOException e) {
-            Toast.makeText(getApplicationContext(),"Erro, ao enviar dados via Bluetooth",Toast.LENGTH_LONG).show();
-        }
-
+    private void liberaComponente(boolean v){
+        cbFarol.setEnabled(v);
+        barDirection.setEnabled(v);
+        barFrente.setEnabled(v);
+        btnConnect.setEnabled(v);
+        btnBuzina.setEnabled(v);
     }
 }
 
